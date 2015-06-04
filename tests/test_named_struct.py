@@ -15,6 +15,7 @@ def test_init():
 
 TestNamedStruct = named_struct('foo')
 
+
 def test_access():
     s = TestNamedStruct()
     assert s.foo is None
@@ -95,6 +96,16 @@ def test_declarative_style_inheritance():
         bar = NamedStructField()
 
     assert MyNamedStruct(17, 42) == dict(foo=17, bar=42)
+
+
+def test_default_value():
+
+    class MyNamedStruct(NamedStruct):
+        foo = NamedStructField()
+        bar = NamedStructField()
+        baz = NamedStructField(default='default')
+
+    assert MyNamedStruct(17) == dict(foo=17, bar=None, baz='default')
 
 
 def test_freeze():

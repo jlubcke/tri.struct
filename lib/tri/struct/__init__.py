@@ -99,12 +99,12 @@ next_index = itertools.count().next
 @total_ordering
 class NamedStructField(object):
 
-    def __init__(self):
-        self._index = next_index()
+    def __init__(self, default=None):
+        self.default = default
+        self.index = next_index()
 
-    # noinspection PyProtectedMember
     def __lt__(self, other):
-        return self._index < other._index
+        return self.index < other.index
 
 
 class NamedStructMeta(type):
@@ -139,22 +139,25 @@ class NamedStruct(Struct):
 
     __metaclass__ = NamedStructMeta
 
+    __slots__ = ('_fields', '_field_definitions')
+
     def __init__(self, *args, **kwargs):
-        attributes = object.__getattribute__(self, '_fields')
+        fields = object.__getattribute__(self, '_fields')
+        field_definitions = object.__getattribute__(self, '_field_definitions')
 
-        if len(args) > len(attributes):
+        if len(args) > len(fields):
             raise ValueError("Too many arguments")
-        new_kwargs = dict(zip(attributes, args))
+        provided_values_by_field = dict(zip(fields, args))
         for key, value in kwargs.items():
-            if key in new_kwargs:
+            if key in provided_values_by_field:
                 raise ValueError('Field "%s" already given as positional argument' % (key, ))
-            new_kwargs[key] = value
+            provided_values_by_field[key] = value
 
-        for key in new_kwargs:
-            if key not in attributes:
-                raise KeyError(key)
+        for provided_field in provided_values_by_field:
+            if provided_field not in fields:
+                raise KeyError(provided_field)
 
-        super(NamedStruct, self).__init__(**{key: new_kwargs.get(key, None) for key in attributes})
+        super(NamedStruct, self).__init__(**{key: provided_values_by_field.get(key, field_definitions[key].default) for key in fields})
 
     def __getitem__(self, key):
         if key not in object.__getattribute__(self, '_fields'):
