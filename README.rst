@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/TriOptima/tri.struct.svg?branch=master
+    :target: https://travis-ci.org/TriOptima/tri.struct
+
 tri.struct
 ==========
 
