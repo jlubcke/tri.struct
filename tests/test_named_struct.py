@@ -13,11 +13,11 @@ def test_init():
     assert named_struct('foo, bar', 'SomeName')().__class__.__name__ == 'SomeName'
 
 
-TestNamedStruct = named_struct('foo')
+MyNamedStruct = named_struct('foo')
 
 
 def test_access():
-    s = TestNamedStruct()
+    s = MyNamedStruct()
     assert s.foo is None
 
     s.foo = 17
@@ -26,14 +26,14 @@ def test_access():
 
 
 def test_read_constraints():
-    s = TestNamedStruct()
+    s = MyNamedStruct()
     with pytest.raises(AttributeError):
         # noinspection PyStatementEffect
         s.bar
 
 
 def test_write_constraints():
-    s = TestNamedStruct()
+    s = MyNamedStruct()
     with pytest.raises(AttributeError):
         # noinspection PyStatementEffect
         s.bar = 17
