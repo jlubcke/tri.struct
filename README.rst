@@ -44,4 +44,4 @@ BSD
 Documentation
 -------------
 
-http://tristruct.rtfd.org.
+http://tristruct.readthedocs.org.
