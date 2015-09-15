@@ -151,6 +151,16 @@ def test_add():
     assert FrozenStruct(x=1, y=2) == FrozenStruct(x=1) + Struct(y=2)
 
 
+def test_add_with_kwarg_constructor():
+
+    class MyStruct(Struct):
+        def __init__(self, **kwargs):
+            super(MyStruct, self).__init__(**kwargs)
+
+    s = MyStruct(foo='foo')
+    assert MyStruct(foo='foo', bar='bar') == s + dict(bar='bar')
+
+
 def test_add_to_self():
     s = Struct(x=1)
     s2 = s

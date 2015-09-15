@@ -3,7 +3,7 @@ from functools import total_ordering
 import itertools
 
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 
 class Struct(dict):
@@ -44,7 +44,7 @@ class Struct(dict):
         result = Struct()
         result.update(self)
         result.update(other)
-        return type(self)(result)
+        return type(self)(**result)
 
     def __iadd__(self, other):
         self.update(other)
