@@ -113,3 +113,15 @@ def test_freeze():
     s = MyNamedStruct(foo=17)
     s.bar = 42
     assert FrozenStruct(s) == FrozenStruct(foo=17, bar=42)
+
+
+def test_inheritance_with_marker_class():
+    class MyType(NamedStruct):
+        pass
+
+    class MySubType(MyType):
+        foo = NamedStructField()
+
+    x = MySubType(foo=1)
+
+    assert x.foo == 1
