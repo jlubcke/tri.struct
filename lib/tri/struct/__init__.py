@@ -107,10 +107,13 @@ class NamedStructField(object):
         return self.index < other.index
 
 
+def is_named_struct_base_class(bases):
+    return len(bases) == 1 and bases[0] is Struct
+
+
 class NamedStructMeta(type):
     def __new__(mcs, class_name, bases, dct):
-
-        if any(isinstance(value, NamedStructField) for value in dct.values()):
+        if not is_named_struct_base_class(bases):
             definitions = [(name, value) for name, value in dct.items() if isinstance(value, NamedStructField)]
             definitions.sort(key=lambda t: t[1])
 
