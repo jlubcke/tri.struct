@@ -3,7 +3,7 @@ from functools import total_ordering
 import itertools
 
 
-__version__ = '0.3.0-dev'
+__version__ = '0.3.0'
 
 
 class Struct(dict):
