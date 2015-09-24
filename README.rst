@@ -1,5 +1,7 @@
 .. image:: https://travis-ci.org/TriOptima/tri.struct.svg?branch=master
     :target: https://travis-ci.org/TriOptima/tri.struct
+.. image:: http://codecov.io/github/TriOptima/tri.struct/coverage.svg?branch=master
+    :target: http://codecov.io/github/TriOptima/tri.struct?branch=master
 
 tri.struct
 ==========
