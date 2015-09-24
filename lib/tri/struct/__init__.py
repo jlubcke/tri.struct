@@ -53,7 +53,7 @@ class Struct(dict):
     def __or__(self, other):
         return self.__add__(other)
 
-    def __ior__(self, other):
+    def __ior__(self, other):  # pragma: no cover
         return self.__iadd__(other)
 
 

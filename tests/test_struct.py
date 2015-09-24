@@ -132,6 +132,18 @@ def test_modify_frozen_struct():
         f.update(dict(x=42))
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
+    with pytest.raises(AttributeError) as e:
+        f.setdefault('foo', 11)
+    assert "'FrozenStruct' object attributes are read-only" in str(e)
+
+    with pytest.raises(AttributeError) as e:
+        f.clear()
+    assert "'FrozenStruct' object attributes are read-only" in str(e)
+
+    with pytest.raises(AttributeError) as e:
+        del f.x
+    assert "'FrozenStruct' object attributes are read-only" in str(e)
+
 
 def test_pickle_struct():
     s = Struct(x=17)
@@ -181,3 +193,16 @@ def test_or():
     assert Struct(x=1, y=2) == Struct(x=1) | Struct(y=2)
     assert Struct(x=1, y=2) == Struct(x=1) | FrozenStruct(y=2)
     assert FrozenStruct(x=1, y=2) == FrozenStruct(x=1) | Struct(y=2)
+
+
+def test_del():
+    s = Struct(a=1)
+    del s.a
+    assert s.get('a', 'sentinel') == 'sentinel'
+    with pytest.raises(AttributeError) as e:
+        del s.a
+    assert e.value.message == "'Struct' object has no attribute 'a'"
+
+
+def test_stable_unicode():
+    assert unicode(Struct(b=1, a=2)) == 'Struct(a=2, b=1)'
