@@ -26,7 +26,7 @@ clean-docs:
 	rm -f docs/tri*.rst
 
 lint:
-	flake8 lib/tri.struct tests
+	flake8 lib/tri tests
 
 test:
 	tox
