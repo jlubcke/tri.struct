@@ -63,13 +63,6 @@ def test_to_dict():
     assert {'a': 1, 'b': 2, 'c': 3} == dict(s)
 
 
-def test_ordering():
-    s = Struct(a=1)
-    t = Struct(b=2)
-    assert s < t
-    assert not t < s
-
-
 def test_items():
     s = Struct(a=1, b=2, c=3)
     assert [('a', 1), ('b', 2), ('c', 3)] == sorted(s.items())
@@ -201,8 +194,8 @@ def test_del():
     assert s.get('a', 'sentinel') == 'sentinel'
     with pytest.raises(AttributeError) as e:
         del s.a
-    assert e.value.message == "'Struct' object has no attribute 'a'"
+    assert str(e.value) == "'Struct' object has no attribute 'a'"
 
 
-def test_stable_unicode():
-    assert unicode(Struct(b=1, a=2)) == 'Struct(a=2, b=1)'
+def test_stable_str():
+    assert str(Struct(b=1, a=2)) == 'Struct(a=2, b=1)'
