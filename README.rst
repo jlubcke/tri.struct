@@ -6,11 +6,10 @@
 tri.struct
 ==========
 
-tri.struct supplies classes that can be used like dictionaries and as objects with attribute access at the same time. There are three classes:
+tri.struct supplies classes that can be used like dictionaries and as objects with attribute access at the same time. There are two versions:
 
 - Struct: mutable struct
 - FrozenStruct: immutable struct
-- NamedStruct: mutable struct with restrictions on which fields can be present
 
 Some niceties include:
 
