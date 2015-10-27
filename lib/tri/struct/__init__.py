@@ -19,15 +19,21 @@ class Struct(dict):
     def __repr__(self):
         return '%s(%s)' % (type(self).__name__, ', '.join(['%s=%r' % (key, self[key]) for key in sorted(self.keys())]))
 
+    def __delattr__(self, item):
+        try:
+            del self[item]
+        except KeyError:
+            raise AttributeError("'%s' object has no attribute '%s'" % (type(self).__name__, item))
+
 
 class FrozenStruct(Struct):
 
     def __hash__(self):
         try:
-            _hash = object.__getattribute__(self, '_hash')
-        except AttributeError:
+            _hash = self['_hash']
+        except KeyError:
             _hash = hash(tuple((k, self[k]) for k in sorted(self.keys())))
-            object.__setattr__(self, '_hash', _hash)
+            dict.__setitem__(self, '_hash', _hash)
         return _hash
 
     def __setitem__(self, *_, **__):
