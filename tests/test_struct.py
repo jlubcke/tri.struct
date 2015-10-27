@@ -2,7 +2,7 @@ import pickle
 import platform
 
 import pytest
-from tri.struct import Struct, FrozenStruct
+from tri.struct import Struct, FrozenStruct, merged
 
 
 def test_constructor():
@@ -161,3 +161,28 @@ def test_del():
 
 def test_stable_str():
     assert str(Struct(b=1, a=2)) == 'Struct(a=2, b=1)'
+
+
+def test_merged():
+    assert Struct(x=1, y=2) == merged(Struct(x=1), Struct(y=2))
+    assert Struct(x=1, y=2) == merged(Struct(x=1), FrozenStruct(y=2))
+    assert FrozenStruct(x=1, y=2) == merged(FrozenStruct(x=1), Struct(y=2))
+
+
+def test_merged_with_kwarg_constructor():
+
+    class MyStruct(Struct):
+        def __init__(self, **kwargs):
+            super(MyStruct, self).__init__(**kwargs)
+
+    s = MyStruct(foo='foo')
+    assert MyStruct(foo='foo', bar='bar') == merged(s, dict(bar='bar'))
+
+
+def test_merge_to_other_type():
+    s1 = Struct(x=1)
+    s2 = dict(y=2)
+    m = merged(FrozenStruct(), s1, s2)
+    assert FrozenStruct(x=1, y=2) == m
+    assert isinstance(m, FrozenStruct)
+

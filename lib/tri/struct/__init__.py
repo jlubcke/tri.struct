@@ -1,5 +1,5 @@
 
-__version__ = '2.0'
+__version__ = '2.0.0'
 
 
 class Struct(dict):
@@ -62,3 +62,13 @@ class FrozenStruct(Struct):
 
     def __setstate__(self, state):
         dict.update(self, state)
+
+
+def merged(*dicts):
+    if not dicts:
+        return Struct()
+    result = dict()
+    for d in dicts:
+        result.update(d)
+    struct_type = type(dicts[0])
+    return struct_type(**result)
