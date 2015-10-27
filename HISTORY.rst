@@ -5,7 +5,8 @@ Changelog
 ~~~~~~~~~~~~~~~~~~~~~~
 
 * slim down interface to again match dict
-* Add tri.struct.merged function to join structs
+* add tri.struct.merged function to join structs
+* add optional C implementation to speed up instantiation
 
 1.0 - 2015-09-29
 ~~~~~~~~~~~~~~~~

@@ -1,15 +1,27 @@
-
 __version__ = '2.0.0'
+__all__ = ['Struct', 'FrozenStruct', 'merged']
 
 
-class Struct(dict):
+try:
+    from ._basestruct import BaseStruct as CBaseStruct
+except ImportError:
+    CBaseStruct = None
+
+
+# expose PyBaseStruct even when CBaseStruct is available, for testability
+class PyBaseStruct(dict):
+    def __init__(self, *args, **kwargs):
+        PyBaseStruct.__setattr__(self, '__dict__', self)
+        super(PyBaseStruct, self).__init__(*args, **kwargs)
+
+
+BaseStruct = CBaseStruct if CBaseStruct is not None else PyBaseStruct
+
+
+class Struct(BaseStruct):
     """
     A dict where keys can also be accessed as attributes.
     """
-    def __init__(self, *args, **kwargs):
-        Struct.__setattr__(self, '__dict__', self)
-        super(Struct, self).__init__(*args, **kwargs)
-
     def copy(self):
         return type(self)(self)
 

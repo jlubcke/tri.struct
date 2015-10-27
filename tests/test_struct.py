@@ -2,7 +2,21 @@ import pickle
 import platform
 
 import pytest
-from tri.struct import Struct, FrozenStruct, merged
+from tri.struct import CBaseStruct, PyBaseStruct, Struct, FrozenStruct, merged
+
+
+@pytest.mark.skipif(CBaseStruct is None,
+                    reason="CBaseStruct is not available for testing")
+def test_cbasestruct():
+    s = CBaseStruct(a=1)
+    assert s['a'] == 1
+    assert s.a == 1
+
+
+def test_pybasestruct():
+    s = PyBaseStruct(a=1)
+    assert s['a'] == 1
+    assert s.a == 1
 
 
 def test_constructor():
@@ -58,6 +72,14 @@ def test_copy():
         s.x
 
     assert "'Struct' object has no attribute 'x'" in str(e)
+
+    class MyStruct(Struct):
+        pass
+
+    s = MyStruct()
+    q = s.copy()
+
+    assert type(s) == type(q)
 
 
 def test_to_dict():
