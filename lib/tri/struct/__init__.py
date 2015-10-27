@@ -37,25 +37,25 @@ class FrozenStruct(Struct):
         return _hash
 
     def __setitem__(self, *_, **__):
-        raise KeyError("'%s' object attributes are read-only" % (type(self).__name__, ))
+        raise TypeError("'%s' object attributes are read-only" % (type(self).__name__, ))
 
     def __setattr__(self, key, value):
-        raise AttributeError("'%s' object attributes are read-only" % (type(self).__name__,))
+        raise TypeError("'%s' object attributes are read-only" % (type(self).__name__,))
 
     def setdefault(self, *_, **__):
-        raise KeyError("'%s' object attributes are read-only" % (type(self).__name__, ))
+        raise TypeError("'%s' object attributes are read-only" % (type(self).__name__, ))
 
     def update(self, *_, **__):
-        raise KeyError("'%s' object attributes are read-only" % (type(self).__name__, ))
+        raise TypeError("'%s' object attributes are read-only" % (type(self).__name__, ))
 
     def clear(self, *_, **__):
-        raise KeyError("'%s' object attributes are read-only" % (type(self).__name__, ))
+        raise TypeError("'%s' object attributes are read-only" % (type(self).__name__, ))
 
     def __delitem__(self, *_, **__):
-        raise KeyError("'%s' object attributes are read-only" % (type(self).__name__, ))
+        raise TypeError("'%s' object attributes are read-only" % (type(self).__name__, ))
 
     def __delattr__(self, *_, **__):
-        raise AttributeError("'%s' object attributes are read-only" % (type(self).__name__,))
+        raise TypeError("'%s' object attributes are read-only" % (type(self).__name__,))
 
     def __reduce__(self):
         return type(self), (), dict(self)

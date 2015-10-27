@@ -117,23 +117,23 @@ def test_frozen_struct():
 
 def test_modify_frozen_struct():
     f = FrozenStruct(x=17)
-    with pytest.raises(AttributeError) as e:
+    with pytest.raises(TypeError) as e:
         f.x = 42
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
-    with pytest.raises(KeyError) as e:
+    with pytest.raises(TypeError) as e:
         f.update(dict(x=42))
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
-    with pytest.raises(KeyError) as e:
+    with pytest.raises(TypeError) as e:
         f.setdefault('foo', 11)
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
-    with pytest.raises(KeyError) as e:
+    with pytest.raises(TypeError) as e:
         f.clear()
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
-    with pytest.raises(AttributeError) as e:
+    with pytest.raises(TypeError) as e:
         del f.x
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
