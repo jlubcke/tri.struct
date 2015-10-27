@@ -68,16 +68,6 @@ def test_items():
     assert [('a', 1), ('b', 2), ('c', 3)] == sorted(s.items())
 
 
-def test_no_longer_has_dict():
-    s = Struct()
-
-    with pytest.raises(AttributeError) as e:
-        # noinspection PyStatementEffect
-        s.__dict__
-
-    assert "'Struct' object has no attribute '__dict__'" in str(e)
-
-
 def test_shadow_methods():
     s = Struct(not_get=17)
     assert "<built-in method get of Struct object at" in str(s.get)
@@ -121,15 +111,15 @@ def test_modify_frozen_struct():
         f.x = 42
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
-    with pytest.raises(AttributeError) as e:
+    with pytest.raises(KeyError) as e:
         f.update(dict(x=42))
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
-    with pytest.raises(AttributeError) as e:
+    with pytest.raises(KeyError) as e:
         f.setdefault('foo', 11)
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
-    with pytest.raises(AttributeError) as e:
+    with pytest.raises(KeyError) as e:
         f.clear()
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
@@ -150,51 +140,13 @@ def test_pickle_frozen_struct():
     assert type(s) == type(pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL)))
 
 
-def test_add():
-    assert Struct(x=1, y=2) == Struct(x=1) + Struct(y=2)
-    assert Struct(x=1, y=2) == Struct(x=1) + FrozenStruct(y=2)
-    assert FrozenStruct(x=1, y=2) == FrozenStruct(x=1) + Struct(y=2)
-
-
-def test_add_with_kwarg_constructor():
-
-    class MyStruct(Struct):
-        def __init__(self, **kwargs):
-            super(MyStruct, self).__init__(**kwargs)
-
-    s = MyStruct(foo='foo')
-    assert MyStruct(foo='foo', bar='bar') == s + dict(bar='bar')
-
-
-def test_add_to_self():
-    s = Struct(x=1)
-    s2 = s
-    s2 += dict(x=2)
-    assert Struct(x=2) == s2
-    assert s is s2
-
-
-def test_add_to_self_frozen_struct():
-    s = FrozenStruct(x=1)
-    s2 = s
-    s2 += dict(x=2)
-    assert FrozenStruct(x=2) == s2
-    assert s is not s2
-
-
-def test_or():
-    assert Struct(x=1, y=2) == Struct(x=1) | Struct(y=2)
-    assert Struct(x=1, y=2) == Struct(x=1) | FrozenStruct(y=2)
-    assert FrozenStruct(x=1, y=2) == FrozenStruct(x=1) | Struct(y=2)
-
-
 def test_del():
     s = Struct(a=1)
     del s.a
     assert s.get('a', 'sentinel') == 'sentinel'
     with pytest.raises(AttributeError) as e:
         del s.a
-    assert str(e.value) == "'Struct' object has no attribute 'a'"
+    assert str(e.value) == "a"
 
 
 def test_stable_str():

@@ -1,14 +1,13 @@
-=========
 Changelog
 =========
 
-Here's the recent changes to tri.struct.
+2.0 - (in development)
+~~~~~~~~~~~~~~~~~~~~~~
 
-.. changelog::
-    :version: dev
-    :released: Ongoing
+* slim down interface to again match dict
 
-    .. change::
-        :tags: docs
+1.0 - 2015-09-29
+~~~~~~~~~~~~~~~~
 
-        Updated CHANGES.
+* Struct with attribute & dict interface
+* __add__ and __or__ to combine structs
