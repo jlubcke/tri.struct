@@ -11,7 +11,7 @@ except ImportError:
 # expose PyBaseStruct even when CBaseStruct is available, for testability
 class PyBaseStruct(dict):
     def __init__(self, *args, **kwargs):
-        PyBaseStruct.__setattr__(self, '__dict__', self)
+        object.__setattr__(self, '__dict__', self)
         super(PyBaseStruct, self).__init__(*args, **kwargs)
 
 
