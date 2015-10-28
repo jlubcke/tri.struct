@@ -1,6 +1,22 @@
 import pickle
+import platform
+
 import pytest
-from tri.struct import Struct, FrozenStruct
+from tri.struct import CBaseStruct, PyBaseStruct, Struct, FrozenStruct, merged
+
+
+@pytest.mark.skipif(CBaseStruct is None,
+                    reason="CBaseStruct is not available for testing")
+def test_cbasestruct():
+    s = CBaseStruct(a=1)
+    assert s['a'] == 1
+    assert s.a == 1
+
+
+def test_pybasestruct():
+    s = PyBaseStruct(a=1)
+    assert s['a'] == 1
+    assert s.a == 1
 
 
 def test_constructor():
@@ -57,6 +73,14 @@ def test_copy():
 
     assert "'Struct' object has no attribute 'x'" in str(e)
 
+    class MyStruct(Struct):
+        pass
+
+    s = MyStruct()
+    q = s.copy()
+
+    assert type(s) == type(q)
+
 
 def test_to_dict():
     s = Struct(a=1, b=2, c=3)
@@ -68,26 +92,21 @@ def test_items():
     assert [('a', 1), ('b', 2), ('c', 3)] == sorted(s.items())
 
 
-def test_no_longer_has_dict():
-    s = Struct()
-
-    with pytest.raises(AttributeError) as e:
-        # noinspection PyStatementEffect
-        s.__dict__
-
-    assert "'Struct' object has no attribute '__dict__'" in str(e)
-
-
 def test_shadow_methods():
+    if platform.python_implementation() == "PyPy":
+        method_str = "<bound method Struct.get of Struct"
+    else:
+        method_str = "<built-in method get of Struct object at"
+
     s = Struct(not_get=17)
-    assert "<built-in method get of Struct object at" in str(s.get)
+    assert method_str in str(s.get)
 
     s = Struct(get=17)
     assert 17 == s.get
 
     del s.get
 
-    assert "<built-in method get of Struct object at" in str(s.get)
+    assert method_str in str(s.get)
 
 
 def test_hash():
@@ -95,10 +114,13 @@ def test_hash():
     s = Struct(x=17)
     with pytest.raises(TypeError) as e:
         hash(s)
-    assert "unhashable type: 'Struct'" in str(e)
+    if platform.python_implementation() == "PyPy":
+        assert "" in str(e)
+    else:
+        assert "unhashable type: 'Struct'" in str(e)
 
     f = FrozenStruct(x=17)
-    assert int == type(hash(f))
+    assert isinstance(hash(f), int)
 
 
 def test_frozen_struct():
@@ -117,23 +139,23 @@ def test_frozen_struct():
 
 def test_modify_frozen_struct():
     f = FrozenStruct(x=17)
-    with pytest.raises(AttributeError) as e:
+    with pytest.raises(TypeError) as e:
         f.x = 42
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
-    with pytest.raises(AttributeError) as e:
+    with pytest.raises(TypeError) as e:
         f.update(dict(x=42))
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
-    with pytest.raises(AttributeError) as e:
+    with pytest.raises(TypeError) as e:
         f.setdefault('foo', 11)
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
-    with pytest.raises(AttributeError) as e:
+    with pytest.raises(TypeError) as e:
         f.clear()
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
-    with pytest.raises(AttributeError) as e:
+    with pytest.raises(TypeError) as e:
         del f.x
     assert "'FrozenStruct' object attributes are read-only" in str(e)
 
@@ -150,44 +172,6 @@ def test_pickle_frozen_struct():
     assert type(s) == type(pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL)))
 
 
-def test_add():
-    assert Struct(x=1, y=2) == Struct(x=1) + Struct(y=2)
-    assert Struct(x=1, y=2) == Struct(x=1) + FrozenStruct(y=2)
-    assert FrozenStruct(x=1, y=2) == FrozenStruct(x=1) + Struct(y=2)
-
-
-def test_add_with_kwarg_constructor():
-
-    class MyStruct(Struct):
-        def __init__(self, **kwargs):
-            super(MyStruct, self).__init__(**kwargs)
-
-    s = MyStruct(foo='foo')
-    assert MyStruct(foo='foo', bar='bar') == s + dict(bar='bar')
-
-
-def test_add_to_self():
-    s = Struct(x=1)
-    s2 = s
-    s2 += dict(x=2)
-    assert Struct(x=2) == s2
-    assert s is s2
-
-
-def test_add_to_self_frozen_struct():
-    s = FrozenStruct(x=1)
-    s2 = s
-    s2 += dict(x=2)
-    assert FrozenStruct(x=2) == s2
-    assert s is not s2
-
-
-def test_or():
-    assert Struct(x=1, y=2) == Struct(x=1) | Struct(y=2)
-    assert Struct(x=1, y=2) == Struct(x=1) | FrozenStruct(y=2)
-    assert FrozenStruct(x=1, y=2) == FrozenStruct(x=1) | Struct(y=2)
-
-
 def test_del():
     s = Struct(a=1)
     del s.a
@@ -199,3 +183,28 @@ def test_del():
 
 def test_stable_str():
     assert str(Struct(b=1, a=2)) == 'Struct(a=2, b=1)'
+
+
+def test_merged():
+    assert Struct(x=1, y=2) == merged(Struct(x=1), Struct(y=2))
+    assert Struct(x=1, y=2) == merged(Struct(x=1), FrozenStruct(y=2))
+    assert FrozenStruct(x=1, y=2) == merged(FrozenStruct(x=1), Struct(y=2))
+
+
+def test_merged_with_kwarg_constructor():
+
+    class MyStruct(Struct):
+        def __init__(self, **kwargs):
+            super(MyStruct, self).__init__(**kwargs)
+
+    s = MyStruct(foo='foo')
+    assert MyStruct(foo='foo', bar='bar') == merged(s, dict(bar='bar'))
+
+
+def test_merge_to_other_type():
+    s1 = Struct(x=1)
+    s2 = dict(y=2)
+    m = merged(FrozenStruct(), s1, s2)
+    assert FrozenStruct(x=1, y=2) == m
+    assert isinstance(m, FrozenStruct)
+
