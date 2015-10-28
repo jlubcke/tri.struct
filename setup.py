@@ -2,7 +2,15 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-from setuptools import setup, find_packages, Command
+import platform
+from setuptools import setup, find_packages, Command, Extension
+from distutils.command.build_ext import build_ext
+from distutils.errors import (
+    DistutilsPlatformError,
+    CCompilerError,
+    DistutilsExecError
+)
+
 
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
@@ -36,6 +44,37 @@ def read_version():
         raise ValueError("couldn't find version")
 
 
+class ve_build_ext(build_ext):
+
+    def run(self):
+        try:
+            build_ext.run(self)
+        except DistutilsPlatformError:
+            self._error()
+
+    def build_extension(self, ext):
+        try:
+            build_ext.build_extension(self, ext)
+        except (CCompilerError, DistutilsExecError, DistutilsPlatformError):
+            self._error()
+
+    def _error(self):
+        print('*' * 75)
+        print('WARNING: The C extension could not be compiled, '
+              'speedups are not enabled.')
+        print('Failure information, if any, is above.')
+        print('The build will continue without extension modules.')
+        print('*' * 75)
+
+
+if platform.python_implementation() == "CPython":
+    ext_modules = [
+        Extension("tri.struct._basestruct", ["lib/tri/struct/_basestruct.c"])
+    ]
+else:
+    ext_modules = []
+
+
 # NB: _don't_ add namespace_packages to setup(), it'll break
 #     everything using imp.find_module
 setup(
@@ -46,9 +85,10 @@ setup(
     author='Johan Lübcke',
     author_email='johan.lubcke@trioptima.com',
     url='',
+    ext_modules=ext_modules,
     packages=find_packages('lib'),
     package_dir={'': 'lib'},
-    include_package_data=True,
+    include_package_data=False,
     install_requires=read_reqs('requirements.txt'),
     license="BSD",
     zip_safe=False,
@@ -65,5 +105,5 @@ setup(
         'Programming Language :: Python :: 3.3',
     ],
     test_suite='tests',
-    cmdclass={'test': PyTest},
+    cmdclass={'test': PyTest, 'build_ext': ve_build_ext},
 )
