@@ -1,20 +1,31 @@
+import sys
 import pickle
 import platform
 
 import pytest
-from tri.struct import CBaseStruct, PyBaseStruct, Struct, FrozenStruct, merged
+
+from tri.struct import Struct, FrozenStruct, merged
+from tri.struct._pystruct import Struct as PyStruct
+
+try:
+    from tri.struct._cstruct import Struct as CStruct
+except ImportError:
+    CStruct = None
 
 
-@pytest.mark.skipif(CBaseStruct is None,
-                    reason="CBaseStruct is not available for testing")
+@pytest.mark.skipif(CStruct is None,
+                    reason="CStruct is not available for testing")
 def test_cbasestruct():
-    s = CBaseStruct(a=1)
+    s = CStruct(a=1)
     assert s['a'] == 1
     assert s.a == 1
 
+    s.b = 2
+    assert s['b'] == 2
+
 
 def test_pybasestruct():
-    s = PyBaseStruct(a=1)
+    s = PyStruct(a=1)
     assert s['a'] == 1
     assert s.a == 1
 
@@ -92,6 +103,18 @@ def test_items():
     assert [('a', 1), ('b', 2), ('c', 3)] == sorted(s.items())
 
 
+def test_no_longer_has_dict():
+    s = Struct()
+    with pytest.raises(AttributeError) as e:
+        s.__dict__
+    assert "'Struct' object has no attribute '__dict__'" in str(e)
+
+    fs = FrozenStruct()
+    with pytest.raises(AttributeError) as e:
+        fs.__dict__
+    assert "'%s' object has no attribute '__dict__'" % FrozenStruct.__name__ in str(e)
+
+
 def test_shadow_methods():
     if platform.python_implementation() == "PyPy":
         method_str = "<bound method Struct.get of Struct"
@@ -121,6 +144,25 @@ def test_hash():
 
     f = FrozenStruct(x=17)
     assert isinstance(hash(f), int)
+    assert not '_hash' in f.keys()
+
+
+def test_equality():
+    a = Struct()
+    b = Struct()
+
+    assert a == b
+
+
+@pytest.mark.skipif(sys.version_info[0] > 2,
+                    reason="unorderable on Python 3")
+def test_ordering_methods():
+    a = Struct()
+    b = Struct()
+
+    assert a <= b
+    assert a >= b
+    assert not a != b
 
 
 def test_frozen_struct():
@@ -183,6 +225,13 @@ def test_del():
 
 def test_stable_str():
     assert str(Struct(b=1, a=2)) == 'Struct(a=2, b=1)'
+
+
+def test_recursive_repr():
+    s = Struct()
+    s.s = s
+
+    assert str(s) == 'Struct(s=Struct(...))'
 
 
 def test_merged():

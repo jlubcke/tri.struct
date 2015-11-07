@@ -1,51 +1,22 @@
-__version__ = '2.0.0'
+__version__ = '2.1.0'
 __all__ = ['Struct', 'FrozenStruct', 'merged']
 
 
 try:
-    from ._basestruct import BaseStruct as CBaseStruct
+    from ._cstruct import Struct
 except ImportError:
-    CBaseStruct = None
-
-
-# expose PyBaseStruct even when CBaseStruct is available, for testability
-class PyBaseStruct(dict):
-    def __init__(self, *args, **kwargs):
-        object.__setattr__(self, '__dict__', self)
-        super(PyBaseStruct, self).__init__(*args, **kwargs)
-
-
-BaseStruct = CBaseStruct if CBaseStruct is not None else PyBaseStruct
-
-
-class Struct(BaseStruct):
-    """
-    A dict where keys can also be accessed as attributes.
-    """
-    def copy(self):
-        return type(self)(self)
-
-    def __unicode__(self):
-        return u'%s(%s)' % (type(self).__name__, u', '.join([u'%s=%r' % (key, self[key]) for key in sorted(self.keys())]))
-
-    def __repr__(self):
-        return '%s(%s)' % (type(self).__name__, ', '.join(['%s=%r' % (key, self[key]) for key in sorted(self.keys())]))
-
-    def __delattr__(self, item):
-        try:
-            del self[item]
-        except KeyError:
-            raise AttributeError("'%s' object has no attribute '%s'" % (type(self).__name__, item))
+    from ._pystruct import Struct
 
 
 class FrozenStruct(Struct):
+    __slots__ = ('_hash', )
 
     def __hash__(self):
         try:
             _hash = self['_hash']
         except KeyError:
             _hash = hash(tuple((k, self[k]) for k in sorted(self.keys())))
-            dict.__setitem__(self, '_hash', _hash)
+            dict.__setattr__(self, '_hash', _hash)
         return _hash
 
     def __setitem__(self, *_, **__):

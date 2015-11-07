@@ -3,6 +3,7 @@
 import os
 import re
 import platform
+
 from setuptools import setup, find_packages, Command, Extension
 from distutils.command.build_ext import build_ext
 from distutils.errors import (
@@ -67,9 +68,11 @@ class ve_build_ext(build_ext):
         print('*' * 75)
 
 
-if platform.python_implementation() == "CPython":
+if platform.python_implementation() == 'CPython':
     ext_modules = [
-        Extension("tri.struct._basestruct", ["lib/tri/struct/_basestruct.c"])
+        Extension("tri.struct._cstruct", ["lib/tri/struct/_cstruct.c",
+                                          "lib/tri/struct/_typespec.c",
+                                          "lib/tri/struct/_utils.c"])
     ]
 else:
     ext_modules = []
@@ -105,5 +108,6 @@ setup(
         'Programming Language :: Python :: 3.3',
     ],
     test_suite='tests',
-    cmdclass={'test': PyTest, 'build_ext': ve_build_ext},
+    cmdclass={'test': PyTest,
+              'build_ext': ve_build_ext},
 )
