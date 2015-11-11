@@ -1,7 +1,15 @@
 Changelog
 =========
 
-2.0 - (in development)
+2.1.2 - 2015-11-11
+~~~~~~~~~~~~~~~~~~
+
+* Redo the C implementation to be a "heaptype", and remove the hack of
+  setting `__dict__` = `self`. Instead, `object` will control the type
+  storage, letting us "insert" attributes into the object without
+  polluting the `dict`.
+
+2.0 - (never released)
 ~~~~~~~~~~~~~~~~~~~~~~
 
 * slim down interface to again match dict
