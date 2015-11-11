@@ -192,6 +192,10 @@ class TestFrozenStruct(object):
         assert "'FrozenStruct' object attributes are read-only" in str(e)
 
         with pytest.raises(TypeError) as e:
+            f['x'] = 42
+        assert "'FrozenStruct' object attributes are read-only" in str(e)
+
+        with pytest.raises(TypeError) as e:
             f.update(dict(x=42))
         assert "'FrozenStruct' object attributes are read-only" in str(e)
 
@@ -207,6 +211,10 @@ class TestFrozenStruct(object):
             del f.x
         assert "'FrozenStruct' object attributes are read-only" in str(e)
 
+        with pytest.raises(TypeError) as e:
+            del f['x']
+        assert "'FrozenStruct' object attributes are read-only" in str(e)
+
     def test_pickle_frozen_struct(self):
         s = FrozenStruct(x=17)
         assert s == pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL))
@@ -217,6 +225,7 @@ def test_merged(Struct):
     assert Struct(x=1, y=2) == merged(Struct(x=1), Struct(y=2))
     assert Struct(x=1, y=2) == merged(Struct(x=1), FrozenStruct(y=2))
     assert FrozenStruct(x=1, y=2) == merged(FrozenStruct(x=1), Struct(y=2))
+    assert {} == merged()
 
 
 def test_merged_with_kwarg_constructor(Struct):

@@ -4,7 +4,7 @@ __all__ = ['Struct', 'FrozenStruct', 'merged']
 
 try:
     from ._cstruct import Struct
-except ImportError:
+except ImportError:  # pragma: no cover
     from ._pystruct import Struct
 
 
