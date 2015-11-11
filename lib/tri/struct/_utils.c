@@ -1,7 +1,9 @@
 #include "Python.h"
 
+#define _LOCAL_ __attribute__((visibility("hidden")))
 
-PyObject *
+
+_LOCAL_ PyObject *
 str_from_string(const char *str)
 {
 #if PY_MAJOR_VERSION >= 3
@@ -12,7 +14,7 @@ str_from_string(const char *str)
 }
 
 
-PyObject *
+_LOCAL_ PyObject *
 str_format(PyObject *fmt, PyObject *args)
 {
 #if PY_MAJOR_VERSION >= 3
@@ -23,7 +25,7 @@ str_format(PyObject *fmt, PyObject *args)
 }
 
 
-PyObject *
+_LOCAL_ PyObject *
 format_with_type(PyTypeObject *type, PyObject *inner)
 {
     PyObject *fmt = NULL, *fmt_args = NULL;
@@ -58,7 +60,7 @@ done:
 }
 
 
-void
+_LOCAL_ void
 str_concat(PyObject **left, PyObject *right)
 {
 #if PY_MAJOR_VERSION >= 3
@@ -72,7 +74,7 @@ str_concat(PyObject **left, PyObject *right)
 }
 
 
-void
+_LOCAL_ void
 str_concat_and_del(PyObject **left, PyObject *right)
 {
 #if PY_MAJOR_VERSION >= 3
@@ -84,7 +86,7 @@ str_concat_and_del(PyObject **left, PyObject *right)
 }
 
 
-PyObject *
+_LOCAL_ PyObject *
 str_join(PyObject *separator, PyObject *seq)
 {
 #if PY_MAJOR_VERSION >= 3

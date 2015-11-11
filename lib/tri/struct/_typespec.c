@@ -8,6 +8,8 @@
 #if PY_MAJOR_VERSION < 3
 #include "_typespec.h"
 
+#define _LOCAL_ __attribute__((visibility("hidden")))
+
 /*
     from typeobject.c
 */
@@ -388,7 +390,7 @@ static short slotoffsets[] = {
 #include "typeslots.inc"
 };
 
-PyObject *
+_LOCAL_ PyObject *
 PyType_FromSpecWithBases(PyType_Spec *spec, PyObject *bases)
 {
     PyHeapTypeObject *res = (PyHeapTypeObject*)PyType_GenericAlloc(&PyType_Type, 0);
@@ -517,7 +519,7 @@ PyType_FromSpecWithBases(PyType_Spec *spec, PyObject *bases)
     return NULL;
 }
 
-PyObject *
+_LOCAL_ PyObject *
 PyType_FromSpec(PyType_Spec *spec)
 {
     return PyType_FromSpecWithBases(spec, NULL);
