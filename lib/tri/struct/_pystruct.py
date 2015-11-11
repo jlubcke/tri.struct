@@ -1,4 +1,21 @@
 class Struct(dict):
+    """
+    Struct(**kwargs) -> new Struct initialized with the name=value pairs
+        in the keyword argument list. For example: Struct(one=1, two=2)
+    Struct() -> new empty Struct
+    Struct(mapping) -> new Struct initialized from a mapping object's
+        (key, value) pairs
+    Struct(iterable) -> new Struct initialized as if via:
+        s = Struct()
+        for k, v in iterable:
+            s[k] = v
+
+    >>> bs = Struct(a=1, b=2, c=3)
+    >>> bs
+    Struct(a=1, b=2, c=3)
+    >>> bs.a
+    1
+    """
     __slots__ = ()
 
     def __repr__(self):
@@ -31,3 +48,6 @@ class Struct(dict):
 
     def copy(self):
         return type(self)(self)
+
+
+Struct.__module__ = "tri.struct"

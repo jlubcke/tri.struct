@@ -1,11 +1,12 @@
-__version__ = '2.1.0'
+__version__ = '2.1.1'
 __all__ = ['Struct', 'FrozenStruct', 'merged']
 
 
+from ._pystruct import Struct
 try:
-    from ._cstruct import Struct
-except ImportError:  # pragma: no cover
-    from ._pystruct import Struct
+    from ._cstruct import _Struct as Struct
+except ImportError:
+    pass
 
 
 class FrozenStruct(Struct):

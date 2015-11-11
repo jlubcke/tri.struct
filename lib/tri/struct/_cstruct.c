@@ -175,9 +175,19 @@ static PyMethodDef Struct_methods[] = {
 
 
 PyDoc_STRVAR(Struct_doc,
+"Struct(**kwargs) -> new Struct initialized with the name=value pairs\n"
+"    in the keyword argument list. For example: Struct(one=1, two=2)\n"
+"Struct() -> new empty Struct\n"
+"Struct(mapping) -> new Struct initialized from a mapping object's\n"
+"    (key, value) pairs\n"
+"Struct(iterable) -> new Struct initialized as if via:\n"
+"    s = Struct()\n"
+"    for k, v in iterable:\n"
+"        s[k] = v\n"
+"\n"
 ">>> bs = Struct(a=1, b=2, c=3)\n"
 ">>> bs\n"
-"{'a': 1, 'c': 3, 'b': 2}\n"
+"Struct(a=1, b=2, c=3)\n"
 ">>> bs.a\n"
 "1\n"
 );
@@ -240,7 +250,7 @@ basestruct_exec(PyObject *m)
         goto fail;
     /* emulate more closely "real" heap types */
     ((PyTypeObject *)o)->tp_name = "Struct";
-    PyModule_AddObject(m, "Struct", o);
+    PyModule_AddObject(m, "_Struct", o);
 
     return 0;
 fail:
@@ -279,7 +289,7 @@ init_cstruct(void)
     if (m == NULL)
         return;
 
-    if (basestruct_exec(m))
+    if (basestruct_exec(m) < 0)
         Py_DECREF(m);
 }
 #endif // !PY_MAJOR_VERSION >= 3
