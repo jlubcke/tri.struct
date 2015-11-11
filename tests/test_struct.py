@@ -8,13 +8,13 @@ from tri.struct import FrozenStruct, merged
 from tri.struct._pystruct import Struct as PyStruct
 
 try:
-    from tri.struct._cstruct import Struct as CStruct
+    from tri.struct._cstruct import _Struct as CStruct
 except ImportError:
     CStruct = None
 
 
 @pytest.fixture(scope="module",
-                params=filter(None, [PyStruct, CStruct]))
+                params=filter(None, [CStruct, PyStruct]))
 def Struct(request):
     return request.param
 
@@ -165,10 +165,36 @@ class TestStruct(object):
 
         assert str(s) == 'Struct(s=Struct(...))'
 
-    def test_pickle_struct(self, Struct):
-        s = Struct(x=17)
-        assert s == pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL))
-        assert type(s) == type(pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL)))
+    ##
+    # because of class name & module renaming, pickling the different
+    # implementations won't, unless you also switch the tri.struct.Struct
+    # implementation to match
+    ##
+    @pytest.mark.skipif(CStruct is None,
+                    reason="CStruct not available")
+    def test_pickle_cstruct(self):
+        import tri.struct
+
+        _Struct = tri.struct.Struct
+        try:
+            tri.struct.Struct = CStruct
+            s = CStruct(x=17)
+            assert s == pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL))
+            assert type(s) == type(pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL)))
+        finally:
+            tri.struct.Struct = _Struct
+
+    def test_pickle_pystruct(self):
+        import tri.struct
+
+        _Struct = tri.struct.Struct
+        try:
+            tri.struct.Struct = PyStruct
+            s = PyStruct(x=17)
+            assert s == pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL))
+            assert type(s) == type(pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL)))
+        finally:
+            tri.struct.Struct = _Struct
 
 
 class TestFrozenStruct(object):
@@ -232,7 +258,6 @@ def test_merged_with_kwarg_constructor(Struct):
     class MyStruct(Struct):
         def __init__(self, **kwargs):
             super(MyStruct, self).__init__(**kwargs)
-
 
     s = MyStruct(foo='foo')
     assert MyStruct(foo='foo', bar='bar') == merged(s, dict(bar='bar'))
