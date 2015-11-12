@@ -252,6 +252,7 @@ def test_merged(Struct):
     assert Struct(x=1, y=2) == merged(Struct(x=1), FrozenStruct(y=2))
     assert FrozenStruct(x=1, y=2) == merged(FrozenStruct(x=1), Struct(y=2))
     assert {} == merged()
+    assert Struct(x=1, y=2) == merged(Struct(x=1), y=2)
 
 
 def test_merged_with_kwarg_constructor(Struct):

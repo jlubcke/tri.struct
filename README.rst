@@ -14,7 +14,8 @@ tri.struct supplies classes that can be used like dictionaries and as objects wi
 Some niceties include:
 
 - Predictable repr() so it's easy to write tests
-- Plus operator for Struct (`Struct(a=1) + Struct(b=1) == Struct(a=1, b=1)`)
+- `merged` function call to merge different types of dicts into a new: `merged(Struct(a=1), FrozenStruct(b=1), c=1) == Struct(a=1, b=1, c=1)`)
+- Accelerated implementation in c for improved speed. (With python-only fallback reference implementation)
 
 Example
 -------

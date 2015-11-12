@@ -1,4 +1,4 @@
-__version__ = '2.1.2'
+__version__ = '2.2.0'
 __all__ = ['Struct', 'FrozenStruct', 'merged']
 
 
@@ -48,11 +48,12 @@ class FrozenStruct(Struct):
         dict.update(self, state)
 
 
-def merged(*dicts):
+def merged(*dicts, **kwargs):
     if not dicts:
         return Struct()
     result = dict()
     for d in dicts:
         result.update(d)
+    result.update(kwargs)
     struct_type = type(dicts[0])
     return struct_type(**result)

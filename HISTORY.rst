@@ -1,6 +1,10 @@
 Changelog
 =========
 
+2.2.0 - 2015-11-12
+
+* Add keyword arguments to `merged` function.
+
 2.1.2 - 2015-11-11
 ~~~~~~~~~~~~~~~~~~
 
