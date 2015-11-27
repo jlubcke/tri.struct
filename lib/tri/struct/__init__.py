@@ -9,8 +9,8 @@ except ImportError:  # pragma: no cover
     pass
 
 
-class FrozenStruct(Struct):
-    __slots__ = ('_hash', )
+class Frozen(object):
+    __slots__ = ()
 
     def __hash__(self):
         try:
@@ -46,6 +46,10 @@ class FrozenStruct(Struct):
 
     def __setstate__(self, state):
         dict.update(self, state)
+
+
+class FrozenStruct(Frozen, Struct):
+    __slots__ = ('_hash', )
 
 
 def merged(*dicts, **kwargs):
