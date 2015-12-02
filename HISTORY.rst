@@ -1,7 +1,16 @@
 Changelog
 =========
 
+2.3.0 - 2015-12-02
+~~~~~~~~~~~~~~~~~~
+
+* Add mixin class `Frozen`to make read-only versions of a dict-derived
+  class (typically a Struct or a subclass there of.)
+
+* Use the `Frozen` mixin to implement `FrozenStruct`
+
 2.2.0 - 2015-11-12
+~~~~~~~~~~~~~~~~~~
 
 * Add keyword arguments to `merged` function.
 
