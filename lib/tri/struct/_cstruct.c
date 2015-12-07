@@ -12,9 +12,11 @@ Struct_getattr(PyObject *self, PyObject *name)
     PyObject *value;
 
     if (!(value = self->ob_type->tp_as_mapping->mp_subscript(self, name))) {
-        if (!(value = PyObject_GenericGetAttr(self, name)))
-            return NULL;
-        PyErr_Clear();
+        if (PyErr_Occurred() == PyExc_KeyError) {
+            PyErr_Clear();
+            if (!(value = PyObject_GenericGetAttr(self, name)))
+                return NULL;
+        }
     }
 
     return value;

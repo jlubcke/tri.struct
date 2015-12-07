@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.3.1 - 2015-12-07
+~~~~~~~~~~~~~~~~~~
+
+* Bugfix: Clear KeyError in CStruct getattr before trying GetAttr,
+  otherwise the KeyError may "leak out". Also, only clear the error
+  and attempt GetAttr if the original error was a KeyError.
+
 2.3.0 - 2015-12-02
 ~~~~~~~~~~~~~~~~~~
 
