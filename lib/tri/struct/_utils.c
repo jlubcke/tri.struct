@@ -3,6 +3,61 @@
 #define _LOCAL_ __attribute__((visibility("hidden")))
 
 
+_LOCAL_ void
+set_attribute_error(PyObject *self, PyObject *name)
+{
+#if PY_MAJOR_VERSION >= 3
+    PyErr_Format(PyExc_AttributeError,
+                 "'%.100s' object has no attribute '%U'",
+                 Py_TYPE(self)->tp_name, name);
+#else
+    PyErr_Format(PyExc_AttributeError,
+                 "'%.100s' object has no attribute '%s'",
+                 Py_TYPE(self)->tp_name, PyString_AS_STRING(name));
+#endif
+}
+
+
+/* "re-implement" `PyDict_GetItemWithError` for getattr in Python 2.7
+    to get around calling `__missing__()`, which shouldn't be done
+    for getattr.
+ */
+#if PY_MAJOR_VERSION < 3
+_LOCAL_ void
+set_key_error(PyObject *arg)
+{
+    PyObject *tup;
+    tup = PyTuple_Pack(1, arg);
+    if (!tup)
+        return; /* caller will expect error to be set anyway */
+    PyErr_SetObject(PyExc_KeyError, tup);
+    Py_DECREF(tup);
+}
+
+_LOCAL_ PyObject *
+PyDict_GetItemWithError(PyObject *op, PyObject *key)
+{
+    long hash;
+    PyDictObject *mp = (PyDictObject *)op;
+    PyDictEntry *ep;
+
+    if (!PyString_CheckExact(key) ||
+        (hash = ((PyStringObject *) key)->ob_shash) == -1)
+    {
+        hash = PyObject_Hash(key);
+        if (hash == -1) {
+            return NULL;
+        }
+    }
+
+    ep = (mp->ma_lookup)(mp, key, hash);
+    if (ep == NULL)
+        return NULL;
+    return ep->me_value;
+}
+#endif
+
+
 _LOCAL_ PyObject *
 str_from_string(const char *str)
 {

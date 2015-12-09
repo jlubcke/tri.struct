@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.4.0 - 2015-12-08
+~~~~~~~~~~~~~~~~~~
+
+* Improvement: If a Struct subclass implements the `__missing__` method,
+  it will not be called before GetAttr on attribute access, but will be
+  called before GetAttr on dict access.
+
 2.3.1 - 2015-12-07
 ~~~~~~~~~~~~~~~~~~
 

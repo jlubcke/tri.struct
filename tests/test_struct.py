@@ -14,7 +14,10 @@ except ImportError:
 
 
 @pytest.fixture(scope="module",
-                params=filter(None, [CStruct, PyStruct]))
+                params=filter(None, [CStruct, PyStruct]),
+                ids=[name for (name, cls) in [("CStruct", CStruct),
+                                              ("PyStruct", PyStruct)]
+                     if cls is not None])
 def Struct(request):
     return request.param
 
@@ -164,6 +167,22 @@ class TestStruct(object):
         s.s = s
 
         assert str(s) == 'Struct(s=Struct(...))'
+
+    def test_missing_method(self, Struct):
+        class MyStruct(Struct):
+            def __missing__(self, key):
+                return 1
+
+        m = MyStruct()
+
+        # the missing method should override attributes on dict access
+        assert m['get'] == 1
+
+        # but not on attribute access
+        assert m.get == MyStruct.get.__get__(m)
+
+        # the missing method should be called for attr access, on missing attribute
+        assert m.bar == 1
 
     ##
     # because of class name & module renaming, pickling the different
