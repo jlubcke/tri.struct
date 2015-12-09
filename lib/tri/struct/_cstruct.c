@@ -11,11 +11,43 @@ Struct_getattr(PyObject *self, PyObject *name)
 {
     PyObject *value;
 
-    if (!(value = self->ob_type->tp_as_mapping->mp_subscript(self, name))) {
-        if (PyErr_Occurred() == PyExc_KeyError) {
-            PyErr_Clear();
-            if (!(value = PyObject_GenericGetAttr(self, name)))
-                return NULL;
+    value = PyDict_GetItemWithError(self, name);
+    if (value) {
+        Py_INCREF(value);
+    }
+    else {
+        if (PyErr_Occurred())
+            return NULL;
+
+        value = PyObject_GenericGetAttr(self, name);
+        if (value == NULL) {
+            /* Look up __missing__ method if we're not the direct dict subclass */
+            if (!Py_TYPE(self)->ob_base == &PyDict_Type) {
+                PyObject *missing, *res;
+                PyObject *err_type, *err_value, *err_tb;
+
+                PyErr_Fetch(&err_type, &err_value, &err_tb);
+
+#if PY_MAJOR_VERSION >= 3
+                _Py_IDENTIFIER(__missing__);
+                missing = _PyObject_LookupSpecial(self, &PyId___missing__);
+#else
+                static PyObject *missing_str = NULL;
+                missing = _PyObject_LookupSpecial(self,
+                                                  "__missing__",
+                                                  &missing_str);
+#endif
+                if (missing != NULL) {
+                    res = PyObject_CallFunctionObjArgs(missing,
+                                                       name, NULL);
+                    Py_DECREF(missing);
+                    return res;
+                }
+                else if (PyErr_Occurred())
+                    return NULL;
+
+                PyErr_Restore(err_type, err_value, err_tb);
+            }
         }
     }
 
@@ -31,15 +63,7 @@ Struct_setattr(PyObject *self, PyObject *name, PyObject *value)
     if (value == NULL) {
         res = PyDict_DelItem(self, name);
         if (res < 0 && PyErr_ExceptionMatches(PyExc_KeyError))
-# if PY_MAJOR_VERSION >= 3
-            PyErr_Format(PyExc_AttributeError,
-                         "'%.100s' object has no attribute '%U'",
-                         Py_TYPE(self)->tp_name, name);
-#else
-            PyErr_Format(PyExc_AttributeError,
-                         "'%.100s' object has no attribute '%s'",
-                         Py_TYPE(self)->tp_name, PyString_AS_STRING(name));
-#endif
+            set_attribute_error(self, name);
     }
     else
         res = PyDict_SetItem(self, name, value);
@@ -205,10 +229,10 @@ StructType_slots[] = {
     {Py_tp_traverse, NULL},
     {Py_tp_clear, NULL},
     {Py_tp_richcompare, NULL},
-# if PY_MAJOR_VERSION < 3
+#if PY_MAJOR_VERSION < 3
     {Py_tp_compare, NULL},
     {Py_tp_print, Struct_print},
-# endif
+#endif
     {Py_tp_repr, Struct_repr},
     {Py_tp_str, Struct_repr},
     {Py_tp_getattro, Struct_getattr},
@@ -243,9 +267,9 @@ basestruct_exec(PyObject *m)
     StructType_slots[5].pfunc = PyDict_Type.tp_traverse;
     StructType_slots[6].pfunc = PyDict_Type.tp_clear;
     StructType_slots[7].pfunc = PyDict_Type.tp_richcompare;
-# if PY_MAJOR_VERSION < 3
+#if PY_MAJOR_VERSION < 3
     StructType_slots[8].pfunc = PyDict_Type.tp_compare;
-# endif
+#endif
 
     o = PyType_FromSpec(&StructType_spec);
     if (o == NULL)
