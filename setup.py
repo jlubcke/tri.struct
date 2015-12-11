@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-import re
 import platform
+import re
 
 from setuptools import setup, find_packages, Command, Extension
 from distutils.command.build_ext import build_ext
@@ -17,7 +17,7 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 
-class PyTest(Command):
+class Tag(Command):
     user_options = []
 
     def initialize_options(self):
@@ -27,9 +27,37 @@ class PyTest(Command):
         pass
 
     def run(self):
-        import sys, subprocess
-        errno = subprocess.call([sys.executable, 'runtests.py'])
+        from subprocess import call
+        version = read_version()
+        errno = call(['git', 'tag', '--annotate', version, '--message', 'Version %s' % version])
+        if errno == 0:
+            print("Added tag for version %s" % version)
         raise SystemExit(errno)
+
+
+class ReleaseCheck(Command):
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        from subprocess import check_output
+        tag = check_output(['git', 'describe', '--all', '--exact-match', 'HEAD']).strip()
+        version = read_version()
+        if tag != version:
+            print('Missing %s tag on release' % version)
+            raise SystemExit(1)
+
+        current_branch = check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
+        if current_branch != 'master':
+            print('Only release from master')
+            raise SystemExit(1)
+
+        print("Ok to distribute files")
 
 
 def read_reqs(name):
@@ -78,8 +106,6 @@ else:
     ext_modules = []
 
 
-# NB: _don't_ add namespace_packages to setup(), it'll break
-#     everything using imp.find_module
 setup(
     name='tri.struct',
     version=read_version(),
@@ -87,7 +113,7 @@ setup(
     long_description=readme + '\n\n' + history,
     author='Johan Lübcke',
     author_email='johan.lubcke@trioptima.com',
-    url='',
+    url='https://github.com/TriOptima/tri.struct',
     ext_modules=ext_modules,
     packages=find_packages('lib'),
     package_dir={'': 'lib'},
@@ -97,7 +123,7 @@ setup(
     zip_safe=False,
     keywords='tri.struct',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
@@ -108,6 +134,7 @@ setup(
         'Programming Language :: Python :: 3.3',
     ],
     test_suite='tests',
-    cmdclass={'test': PyTest,
-              'build_ext': ve_build_ext},
+    cmdclass={'build_ext': ve_build_ext,
+              'release_check': ReleaseCheck,
+              'tag': Tag},
 )

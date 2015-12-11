@@ -8,6 +8,8 @@ help:
 	@echo "coverage - check code coverage quickly with the default Python"
 	@echo "docs - generate Sphinx HTML documentation, including API docs"
 	@echo "dist - package"
+	@echo "tag - make a tag with the current version number"
+	@echo "release_check - verify tag and branch state"
 
 clean: clean-build clean-pyc
 	rm -fr htmlcov/
@@ -42,3 +44,9 @@ dist: clean
 	python setup.py bdist_wheel
 	python setup.py bdist_egg
 	ls -l dist
+
+tag:
+	python setup.py tag
+
+release_check: dist
+	python setup.py release_check
