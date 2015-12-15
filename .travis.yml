@@ -12,3 +12,4 @@ deploy:
   on:
     tags: true
     repo: TriOptima/tri.struct
+  distributions: "sdist bdist_egg bdist_wheel"
