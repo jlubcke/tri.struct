@@ -1,6 +1,16 @@
 Changelog
 =========
 
+2.5.1 - 2015-12-15
+~~~~~~~~~~~~~~~~~~
+
+* Bugfix: Fix compilation of the _cstruct module.
+
+2.5.0 - (never released)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Build changes.
+
 2.4.0 - 2015-12-08
 ~~~~~~~~~~~~~~~~~~
 

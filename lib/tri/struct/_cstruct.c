@@ -22,7 +22,7 @@ Struct_getattr(PyObject *self, PyObject *name)
         value = PyObject_GenericGetAttr(self, name);
         if (value == NULL) {
             /* Look up __missing__ method if we're not the direct dict subclass */
-            if (!Py_TYPE(self)->ob_base == &PyDict_Type) {
+            if (!(Py_TYPE(self)->tp_base == &PyDict_Type)) {
                 PyObject *missing, *res;
                 PyObject *err_type, *err_value, *err_tb;
 
