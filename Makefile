@@ -28,7 +28,7 @@ clean-docs:
 	rm -f docs/tri*.rst
 
 lint:
-	flake8
+	tox -e lint
 
 test:
 	tox
