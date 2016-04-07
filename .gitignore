@@ -1,6 +1,6 @@
 *.py[cod]
 examples/db.sqlite3
-env
+venv
 table.css.map
 .idea
 
