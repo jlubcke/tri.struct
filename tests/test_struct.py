@@ -133,7 +133,7 @@ class TestStruct(object):
 
         f = FrozenStruct(x=17)
         assert isinstance(hash(f), int)
-        assert not '_hash' in f.keys()
+        assert '_hash' not in f.keys()
 
     def test_equality(self, Struct):
         a = Struct()
@@ -190,7 +190,7 @@ class TestStruct(object):
     # implementation to match
     ##
     @pytest.mark.skipif(CStruct is None,
-                    reason="CStruct not available")
+                        reason="CStruct not available")
     def test_pickle_cstruct(self):
         import tri.struct
 
