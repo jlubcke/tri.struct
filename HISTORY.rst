@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.5.2 - 2016-04-07
+~~~~~~~~~~~~~~~~~~
+
+* Fix make and tox targets for build and release.
+* Fix lint issues.
+
 2.5.1 - 2015-12-15
 ~~~~~~~~~~~~~~~~~~
 
