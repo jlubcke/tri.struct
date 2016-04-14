@@ -1,4 +1,4 @@
-.PHONY: clean-pyc clean-build docs clean
+.PHONY: clean-pyc clean-build docs clean lint test coverage docs dist tag release-check
 
 help:
 	@echo "clean-build - remove build artifacts"
