@@ -1,5 +1,5 @@
 Changelog
-=========
+---------
 
 2.5.2 - 2016-04-07
 ~~~~~~~~~~~~~~~~~~
@@ -34,7 +34,7 @@ Changelog
 2.3.0 - 2015-12-02
 ~~~~~~~~~~~~~~~~~~
 
-* Add mixin class `Frozen`to make read-only versions of a dict-derived
+* Add mixin class `Frozen` to make read-only versions of a dict-derived
   class (typically a Struct or a subclass there of.)
 
 * Use the `Frozen` mixin to implement `FrozenStruct`
