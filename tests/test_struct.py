@@ -234,31 +234,31 @@ class TestFrozenStruct(object):
         f = FrozenStruct(x=17)
         with pytest.raises(TypeError) as e:
             f.x = 42
-        assert "'FrozenStruct' object attributes are read-only" in str(e)
+        assert "'FrozenStruct' object attributes are read-only" == str(e.value)
 
         with pytest.raises(TypeError) as e:
             f['x'] = 42
-        assert "'FrozenStruct' object attributes are read-only" in str(e)
+        assert "'FrozenStruct' object attributes are read-only" == str(e.value)
 
         with pytest.raises(TypeError) as e:
             f.update(dict(x=42))
-        assert "'FrozenStruct' object attributes are read-only" in str(e)
+        assert "'FrozenStruct' object attributes are read-only" == str(e.value)
 
         with pytest.raises(TypeError) as e:
             f.setdefault('foo', 11)
-        assert "'FrozenStruct' object attributes are read-only" in str(e)
+        assert "'FrozenStruct' object attributes are read-only" == str(e.value)
 
         with pytest.raises(TypeError) as e:
             f.clear()
-        assert "'FrozenStruct' object attributes are read-only" in str(e)
+        assert "'FrozenStruct' object attributes are read-only" == str(e.value)
 
         with pytest.raises(TypeError) as e:
             del f.x
-        assert "'FrozenStruct' object attributes are read-only" in str(e)
+        assert "'FrozenStruct' object attributes are read-only" == str(e.value)
 
         with pytest.raises(TypeError) as e:
             del f['x']
-        assert "'FrozenStruct' object attributes are read-only" in str(e)
+        assert "'FrozenStruct' object attributes are read-only" == str(e.value)
 
     def test_pickle_frozen_struct(self):
         s = FrozenStruct(x=17)

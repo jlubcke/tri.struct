@@ -5,20 +5,21 @@ except ImportError:  # pragma: no cover
     pass
 
 
-__version__ = '2.6.0'
+__version__ = '2.6.0'  # pragma: no mutate
 
-__all__ = ['Struct', 'FrozenStruct', 'merged']
+__all__ = ['Struct', 'FrozenStruct', 'merged']   # pragma: no mutate
 
 
 class Frozen(object):
     __slots__ = ()
 
     def __hash__(self):
+        hash_key = '_hash'  # pragma: no mutate
         try:
-            _hash = self['_hash']
+            _hash = self[hash_key]
         except KeyError:
             _hash = hash(tuple((k, self[k]) for k in sorted(self.keys())))
-            dict.__setattr__(self, '_hash', _hash)
+            dict.__setattr__(self, hash_key, _hash)
         return _hash
 
     def __setitem__(self, *_, **__):
