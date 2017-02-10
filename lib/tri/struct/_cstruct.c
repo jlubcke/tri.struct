@@ -105,12 +105,14 @@ Struct_repr(PyObject *self)
         return NULL;
     }
 
-    if (i > 0) {
+    if (i != 0) {
+        if (i < 0) return NULL;
+
         inner_repr = str_from_string("...");
         if (inner_repr == NULL)
-            goto done;
+            return NULL;
 
-        result = format_with_type(type, inner_repr);
+        return format_with_type(type, inner_repr);
     }
     else if (((PyDictObject *)self)->ma_used == 0) {
         result = format_with_type(type, NULL);

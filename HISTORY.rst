@@ -1,9 +1,11 @@
 Changelog
 ---------
 
-2.6.0 (----------)
+2.5.3 (2017-02-10)
 ~~~~~~~~~~~~~~~~~~
 
+* Fix use-after-free when repring a `Struct` that contains
+  itself more than once.
 
 2.5.2 (2016-04-07)
 ~~~~~~~~~~~~~~~~~~
@@ -16,8 +18,8 @@ Changelog
 
 * Bugfix: Fix compilation of the _cstruct module.
 
-2.5.0 (never released)
-~~~~~~~~~~~~~~~~~~~~~~
+2.5.0 (unreleased)
+~~~~~~~~~~~~~~~~~~
 
 * Build changes.
 
@@ -56,8 +58,8 @@ Changelog
   storage, letting us "insert" attributes into the object without
   polluting the `dict`.
 
-2.0 (never released)
-~~~~~~~~~~~~~~~~~~~~
+2.0 (unreleased)
+~~~~~~~~~~~~~~~~
 
 * slim down interface to again match dict
 * add tri.struct.merged function to join structs

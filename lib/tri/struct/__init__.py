@@ -5,9 +5,8 @@ except ImportError:  # pragma: no cover
     pass
 
 
-__version__ = '2.6.0'  # pragma: no mutate
-
-__all__ = ['Struct', 'FrozenStruct', 'merged']   # pragma: no mutate
+__version__ = '2.5.3'  # pragma: no mutate
+__all__ = ['Struct', 'FrozenStruct', 'merged']  # pragma: no mutate
 
 
 class Frozen(object):

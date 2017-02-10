@@ -168,6 +168,12 @@ class TestStruct(object):
 
         assert str(s) == 'Struct(s=Struct(...))'
 
+        # test fix for use-after-free
+        s = Struct()
+        s.a = s
+        s.b = s
+        assert repr(s) == 'Struct(a=Struct(...), b=Struct(...))'
+
     def test_missing_method(self, Struct):
         class MyStruct(Struct):
             def __missing__(self, key):
