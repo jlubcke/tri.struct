@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-2.5.4 (----------)
+2.5.4 (2017-06-13)
 ~~~~~~~~~~~~~~~~~~
 
 * Added `DefaultStruct` in the spirit of the standard library `defaultdict`.
