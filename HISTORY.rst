@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+2.5.4 (----------)
+~~~~~~~~~~~~~~~~~~
+
+* Added `DefaultStruct` in the spirit of the standard library `defaultdict`.
+  Also added a `to_default_struct` for recursively converting dicts recursively.
+
+
 2.5.3 (2017-02-10)
 ~~~~~~~~~~~~~~~~~~
 

@@ -4,7 +4,7 @@ import sys
 
 import pytest
 
-from tri.struct import FrozenStruct, merged
+from tri.struct import FrozenStruct, merged, DefaultStruct, to_default_struct
 from tri.struct._pystruct import Struct as PyStruct
 
 try:
@@ -295,3 +295,33 @@ def test_merge_to_other_type(Struct):
     m = merged(FrozenStruct(), s1, s2)
     assert FrozenStruct(x=1, y=2) == m
     assert isinstance(m, FrozenStruct)
+
+
+def test_default_struct():
+    d = DefaultStruct()
+    assert type(d.a) is DefaultStruct
+
+    d.a.b.c = 17
+    d.a.d.e = 42
+    d.x
+    assert {'a': {'b': {'c': 17},
+                  'd': {'e': 42}},
+            'x': {}} == d
+
+
+def test_default_struct_with_list():
+    d = DefaultStruct(list)
+    d.a.append(17)
+    assert dict(a=[17]) == d
+
+
+def test_to_default_struct():
+    d = to_default_struct({
+        'a': {'b': {'c': 17},
+              'd': DefaultStruct(e=42)}})
+
+    d.x.y = 'z'
+
+    assert {'a': {'b': {'c': 17},
+                  'd': {'e': 42}},
+            'x': {'y': 'z'}} == d
