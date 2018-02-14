@@ -325,3 +325,15 @@ def test_to_default_struct():
     assert {'a': {'b': {'c': 17},
                   'd': {'e': 42}},
             'x': {'y': 'z'}} == d
+
+
+def test_repr_with_value_exception(Struct):
+    class MyException(Exception):
+        pass
+
+    with pytest.raises(MyException):
+        class Fisk:
+            def __repr__(self):
+                raise MyException("bummer")
+
+        repr(Struct({'a': Fisk()}))
