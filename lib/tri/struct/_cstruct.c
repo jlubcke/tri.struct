@@ -134,7 +134,7 @@ Struct_repr(PyObject *self)
             goto done;
 
         for (i = 0; i < PyList_GET_SIZE(items); i++) {
-            PyObject *temp, *key, *value;
+            PyObject *temp, *key, *value, *value_repr;
             int status;
 
             temp = PyList_GET_ITEM(items, i);
@@ -149,8 +149,13 @@ Struct_repr(PyObject *self)
             Py_INCREF(value);
             s = PyObject_Str(key);
             str_concat(&s, equals);
-            str_concat_and_del(&s, PyObject_Repr(value));
+            value_repr = PyObject_Repr(value);
             Py_DECREF(value);
+            if(value_repr == NULL) {
+                Py_DECREF(s);
+                goto done;
+            }
+            str_concat_and_del(&s, value_repr);
             if (s == NULL)
                 goto done;
             status = PyList_Append(pieces, s);
