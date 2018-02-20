@@ -1,5 +1,10 @@
 Changelog
 ---------
+2.5.5 (2018-02-20)
+~~~~~~~~~~~~~~~~~~
+
+* Fixed segfault in repr when running under Python 3
+
 
 2.5.4 (2017-06-13)
 ~~~~~~~~~~~~~~~~~~
