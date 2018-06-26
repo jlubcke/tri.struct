@@ -31,7 +31,7 @@ lint:
 	tox -e lint
 
 test:
-	tox
+	tox --skip-missing-interpreters
 
 coverage:
 	tox -e coverage
@@ -40,9 +40,9 @@ docs:
 	tox -e docs
 
 dist: clean
-	python setup.py sdist
-	python setup.py bdist_wheel
-	python setup.py bdist_egg
+	python2.7 setup.py sdist
+	python2.7 setup.py bdist_wheel
+	python3.6 setup.py bdist_wheel
 	ls -l dist
 
 tag:
