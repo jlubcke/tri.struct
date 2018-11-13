@@ -342,3 +342,7 @@ def test_repr_with_value_exception(Struct):
 @pytest.mark.skipif(sys.version_info[0] > 2, reason="Unable to sort different types of keys in Python 3")
 def test_repr_with_keys_of_int_and_str(Struct):
     repr(Struct({1: 2, 'foo': 'bar'}))
+
+
+def test_module_attribute(Struct):
+    assert Struct.__module__  == 'tri.struct'
