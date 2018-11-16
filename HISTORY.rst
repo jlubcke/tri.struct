@@ -1,5 +1,12 @@
 Changelog
 ---------
+
+2.5.7 (2018-11-16)
+~~~~~~~~~~~~~~~~~~
+
+* Fixed performance issue with `Frozen`/`FrozenStruct`: the hash was recalculated on each use instead of cached.
+
+
 2.5.6 (2018-06-26)
 ~~~~~~~~~~~~~~~~~~
 
