@@ -345,4 +345,12 @@ def test_repr_with_keys_of_int_and_str(Struct):
 
 
 def test_module_attribute(Struct):
-    assert Struct.__module__  == 'tri.struct'
+    assert Struct.__module__ == 'tri.struct'
+
+
+def test_frozen_struct_cache_actually_caches():
+    f = FrozenStruct(a=1, b=2)
+    old_hash = hash(f)
+    dict.__setitem__(f, 'a', 2)
+    assert hash(f) == old_hash
+    assert f._hash == old_hash

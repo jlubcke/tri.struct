@@ -13,10 +13,10 @@ class Frozen(object):
     __slots__ = ()
 
     def __hash__(self):
-        hash_key = '_hash'  # pragma: no mutate
+        hash_key = '_hash'
         try:
-            _hash = self[hash_key]
-        except KeyError:
+            _hash = dict.__getattribute__(self, hash_key)
+        except AttributeError:
             _hash = hash(tuple((k, self[k]) for k in sorted(self.keys())))
             dict.__setattr__(self, hash_key, _hash)
         return _hash
