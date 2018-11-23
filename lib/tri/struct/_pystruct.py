@@ -1,20 +1,25 @@
 class Struct(dict):
     """
-    Struct(**kwargs) -> new Struct initialized with the name=value pairs
-        in the keyword argument list. For example: Struct(one=1, two=2)
-    Struct() -> new empty Struct
-    Struct(mapping) -> new Struct initialized from a mapping object's
-        (key, value) pairs
-    Struct(iterable) -> new Struct initialized as if via:
-        s = Struct()
-        for k, v in iterable:
-            s[k] = v
+    Struct is a dict that can be accessed like an object. It also has a predictable repr so it can be used in tests for example.
 
-    >>> bs = Struct(a=1, b=2, c=3)
-    >>> bs
-    Struct(a=1, b=2, c=3)
-    >>> bs.a
-    1
+    .. code-block:: python
+
+        >>> bs = Struct(a=1, b=2, c=3)
+        >>> bs
+        Struct(a=1, b=2, c=3)
+        >>> bs.a
+        1
+
+    * Struct(**kwargs) -> new Struct initialized with the name=value pairs in the keyword aasdrgument list. For example: Struct(one=1, two=2)
+    * Struct() -> new empty Struct
+    * Struct(mapping) -> new Struct initialized from a mapping object's (key, value) pairs
+    * Struct(iterable) -> new Struct initialized as if via:
+        .. code-block:: python
+
+            s = Struct()
+            for k, v in iterable:
+                s[k] = v
+
     """
     __slots__ = ()
 

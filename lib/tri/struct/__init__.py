@@ -10,6 +10,10 @@ __all__ = ['Struct', 'FrozenStruct', 'merged', 'DefaultStruct', 'to_default_stru
 
 
 class Frozen(object):
+    """
+    Mixin to create an immutable class.
+    """
+
     __slots__ = ()
 
     def __hash__(self):
@@ -54,6 +58,14 @@ class FrozenStruct(Frozen, Struct):
 
 
 def merged(*dicts, **kwargs):
+    """
+    Merge dictionaries. Later keys overwrite.
+
+    .. code-block:: python
+
+        merged(dict(a=1), dict(b=2), c=3, d=1)
+
+    """
     if not dicts:
         return Struct()
     result = dict()

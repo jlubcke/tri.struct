@@ -1,8 +1,5 @@
-Welcome to tri.struct's documentation!
-======================================
-
 .. include:: ../README.rst
-    :start-line: 3
+    :start-line: 4
 
 Contents:
 =========
