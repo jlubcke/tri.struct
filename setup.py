@@ -23,7 +23,7 @@ def read_reqs(name):
 
 
 def read_version():
-    with open(os.path.join('lib', 'tri/struct', '__init__.py')) as f:
+    with open(os.path.join('lib', 'tri_struct', '__init__.py')) as f:
         m = re.search(r'''__version__\s*=\s*['"]([^'"]*)['"]''', f.read())
         if m:
             return m.group(1)
@@ -55,9 +55,9 @@ class ve_build_ext(build_ext):
 
 if platform.python_implementation() == 'CPython':
     ext_modules = [
-        Extension("tri.struct._cstruct", ["lib/tri/struct/_cstruct.c",
-                                          "lib/tri/struct/_typespec.c",
-                                          "lib/tri/struct/_utils.c"])
+        Extension("tri_struct._cstruct", ["lib/tri_struct/_cstruct.c",
+                                          "lib/tri_struct/_typespec.c",
+                                          "lib/tri_struct/_utils.c"])
     ]
 else:
     ext_modules = []

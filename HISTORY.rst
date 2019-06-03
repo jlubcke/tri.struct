@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+3.0.0 (2019-06-04)
+~~~~~~~~~~~~~~~~~~
+
+* Renamed module from `tri.struct` to `tri_struct`. This is a breaking change.
+
+
 2.5.7 (2018-11-16)
 ~~~~~~~~~~~~~~~~~~
 

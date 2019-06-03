@@ -22,6 +22,7 @@ Example
 
 .. code:: python
 
+    >>> from tri_struct import Struct
     >>> foo = Struct()
     >>> foo.a = 1
     >>> foo['a']
