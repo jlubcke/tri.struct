@@ -6,6 +6,8 @@ Changelog
 
 * Renamed module from `tri.struct` to `tri_struct`. This is a breaking change.
 
+* Dropped python2 support
+
 
 2.5.7 (2018-11-16)
 ~~~~~~~~~~~~~~~~~~
