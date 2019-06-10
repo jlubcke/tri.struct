@@ -61,4 +61,4 @@ class Struct(dict):
         return type(self)(self)
 
 
-Struct.__module__ = "tri.struct"
+Struct.__module__ = "tri_struct"

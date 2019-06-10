@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-    tri.struct
+    tri_struct
 
 Module contents
 ---------------

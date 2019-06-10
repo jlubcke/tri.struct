@@ -251,7 +251,7 @@ StructType_slots[] = {
 
 static PyType_Spec
 StructType_spec = {
-    .name = "tri.struct.Struct",
+    .name = "tri_struct.Struct",
     .basicsize = sizeof(StructObject),
     .flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC
         | Py_TPFLAGS_DICT_SUBCLASS | Py_TPFLAGS_HAVE_VERSION_TAG,
@@ -318,7 +318,7 @@ init_cstruct(void)
 {
     PyObject *m = NULL;
 
-    m = Py_InitModule("tri.struct._cstruct", NULL);
+    m = Py_InitModule("tri_struct._cstruct", NULL);
     if (m == NULL)
         return;
 

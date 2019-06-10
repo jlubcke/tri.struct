@@ -1,6 +1,6 @@
 API documentation
 =================
 
-.. automodule:: tri.struct
+.. automodule:: tri_struct
    :members:
    :special-members:

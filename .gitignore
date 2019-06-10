@@ -1,10 +1,13 @@
 *.py[cod]
 examples/db.sqlite3
 venv
+.venv
 table.css.map
 .idea
 .cache
 .mutmut-cache
+
+.DS_Store
 
 # C extensions
 *.so
