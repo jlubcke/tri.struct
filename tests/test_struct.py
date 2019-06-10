@@ -1,6 +1,5 @@
 import pickle
 import platform
-import sys
 
 import pytest
 
@@ -151,16 +150,6 @@ def test_equality(Struct):
     b = Struct()
 
     assert a == b
-
-
-@pytest.mark.skipif(sys.version_info[0] > 2, reason="unorderable on Python 3")
-def test_ordering_methods(Struct):
-    a = Struct()
-    b = Struct()
-
-    assert a <= b
-    assert a >= b
-    assert not a != b
 
 
 def test_del(Struct):
@@ -353,11 +342,6 @@ def test_repr_with_value_exception(Struct):
                 raise MyException("bummer")
 
         repr(Struct({'a': Fisk()}))
-
-
-@pytest.mark.skipif(sys.version_info[0] > 2, reason="Unable to sort different types of keys in Python 3")
-def test_repr_with_keys_of_int_and_str(Struct):
-    repr(Struct({1: 2, 'foo': 'bar'}))
 
 
 def test_module_attribute(Struct):
