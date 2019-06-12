@@ -5,7 +5,7 @@ except ImportError:  # pragma: no cover
     pass
 
 
-__version__ = '3.0.0'  # pragma: no mutate
+__version__ = '3.0.1'  # pragma: no mutate
 __all__ = ['Struct', 'FrozenStruct', 'merged', 'DefaultStruct', 'to_default_struct']  # pragma: no mutate
 
 
