@@ -116,7 +116,7 @@ def test_no_longer_has_dict(Struct):
 
 def test_shadow_methods(Struct):
     if platform.python_implementation() == "PyPy":
-        method_str = "<bound method Struct.get of Struct"
+        method_str = "<bound method dict.get of Struct"
     else:
         method_str = "<built-in method get of Struct object at"
 
