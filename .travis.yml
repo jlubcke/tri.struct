@@ -1,17 +1,49 @@
 language: python
-python:
-- '3.6'
-- 'pypy'
-install: pip install tox codecov
-script: make coverage
-after_success: codecov
-deploy:
-  provider: pypi
-  user: j_lubcke
-  password:
-    secure: kdfDfBbDnQGrSz8EJAIC52GB2p3rwWxJ59ITlqaAPoN94QTfJy1wj4MzT3WRl99CTxoSGm63G02aeTimRWUp5X5Cn62AyLr2vD5+DaOIMb//S3F10u9XA/xdEborXGPCSV/QIM4BNbVQNistm7uFHUDqJRhZ/13eladnbu3laqvIIpWvt1HRRCdr5S4+0EQ8rTSoSjrsFkdEt2Z68OhDrbhkHfA+hjc/1ik214b6YkxMMWOGKRX1qpfXbBQVwq5Cw6xqVX7BRx+YSm2l05kjPHr3J9d4mAOh9A6kaF4PpSqRiEEf5xbpqTcakNOzEBfBzZlVW+HS2mA4IeFNblUQQlCbipNazBSzGAClxRAExk1hRxE4IHntB1R920MnE7V4HhJ/pkurMbjC7E/pEqbYYGMcKP5NDaaq0woHveM0vQir4cgFHNIsUwG9VBrB2eQ9aP/+Cjpx1xUZV4VjLLuibM91jtJFS8lqPGZT8/i5/6ux7clCsC4nLgB+7vB+hTXeJhDMM+s/a+T8Ft/GbxZH7fEF8zXl9F4SsWOWDlvmGjzcPBzUAt2b9tLHc0dbHMFpc8s90nIW/7JpGaZFkDkUt+62Jlp7qcYNEd6RvsZ8B9yBE4fMPOx7K07VLFJaKEDsLUhi9+E7FJ5XwZMFye7DHSjAjJL1A57+JjdDXKx8VtA=
-  on:
-    python: 3.6
-    tags: true
-    repo: TriOptima/tri.struct
 
+stages:
+  - lint
+  - test
+  - build
+  - coverage
+  - deploy
+
+install:
+  - pip install -r test_requirements.txt
+  - pip install .
+
+script: python -m pytest
+
+jobs:
+  include:
+    - stage: lint
+      python: "3.6"
+      before_install:
+        - pip install flake8
+      script:
+        - flake8 lib/ tests setup.py
+
+    - stage: test
+      python: "3.6"
+      dist: xenial
+    - python: pypy3
+      dist: xenial
+    - python: "3.7"
+      dist: xenial
+
+    - stage: coverage
+      python: "3.7"
+      before_install: python -m pip install codecov pytest-cov
+      script: python -m pytest --cov
+      after_success: codecov
+      dist: xenial
+
+    - stage: deploy
+      script: python setup.py sdist
+      deploy:
+        provider: pypi
+        user: j_lubcke
+        password:
+          secure: kdfDfBbDnQGrSz8EJAIC52GB2p3rwWxJ59ITlqaAPoN94QTfJy1wj4MzT3WRl99CTxoSGm63G02aeTimRWUp5X5Cn62AyLr2vD5+DaOIMb//S3F10u9XA/xdEborXGPCSV/QIM4BNbVQNistm7uFHUDqJRhZ/13eladnbu3laqvIIpWvt1HRRCdr5S4+0EQ8rTSoSjrsFkdEt2Z68OhDrbhkHfA+hjc/1ik214b6YkxMMWOGKRX1qpfXbBQVwq5Cw6xqVX7BRx+YSm2l05kjPHr3J9d4mAOh9A6kaF4PpSqRiEEf5xbpqTcakNOzEBfBzZlVW+HS2mA4IeFNblUQQlCbipNazBSzGAClxRAExk1hRxE4IHntB1R920MnE7V4HhJ/pkurMbjC7E/pEqbYYGMcKP5NDaaq0woHveM0vQir4cgFHNIsUwG9VBrB2eQ9aP/+Cjpx1xUZV4VjLLuibM91jtJFS8lqPGZT8/i5/6ux7clCsC4nLgB+7vB+hTXeJhDMM+s/a+T8Ft/GbxZH7fEF8zXl9F4SsWOWDlvmGjzcPBzUAt2b9tLHc0dbHMFpc8s90nIW/7JpGaZFkDkUt+62Jlp7qcYNEd6RvsZ8B9yBE4fMPOx7K07VLFJaKEDsLUhi9+E7FJ5XwZMFye7DHSjAjJL1A57+JjdDXKx8VtA=
+        on:
+          tags: true
+          repo: TriOptima/tri.struct
