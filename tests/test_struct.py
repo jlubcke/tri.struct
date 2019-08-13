@@ -81,7 +81,7 @@ def test_copy(Struct):
         # noinspection PyStatementEffect
         s.x
 
-    assert "'Struct' object has no attribute 'x'" in str(e)
+    assert "'Struct' object has no attribute 'x'" in str(e.value)
 
     class MyStruct(Struct):
         pass
@@ -106,12 +106,12 @@ def test_no_longer_has_dict(Struct):
     s = Struct()
     with pytest.raises(AttributeError) as e:
         s.__dict__
-    assert "'Struct' object has no attribute '__dict__'" in str(e)
+    assert "'Struct' object has no attribute '__dict__'" in str(e.value)
 
     fs = FrozenStruct()
     with pytest.raises(AttributeError) as e:
         fs.__dict__
-    assert "'%s' object has no attribute '__dict__'" % FrozenStruct.__name__ in str(e)
+    assert "'%s' object has no attribute '__dict__'" % FrozenStruct.__name__ in str(e.value)
 
 
 def test_shadow_methods(Struct):
@@ -136,9 +136,9 @@ def test_hash(Struct):
     with pytest.raises(TypeError) as e:
         hash(s)
     if platform.python_implementation() == "PyPy":
-        assert "" in str(e)
+        assert "" in str(e.value)
     else:
-        assert "unhashable type: 'Struct'" in str(e)
+        assert "unhashable type: 'Struct'" in str(e.value)
 
     f = FrozenStruct(x=17)
     assert isinstance(hash(f), int)
