@@ -52,6 +52,9 @@ class Frozen(object):
     def __setstate__(self, state):
         dict.update(self, state)
 
+    def __copy__(self):
+        return self
+
 
 class FrozenStruct(Frozen, Struct):
     __slots__ = ('_hash', )
