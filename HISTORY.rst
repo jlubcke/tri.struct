@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+3.1.0 (2019-08-14)
+~~~~~~~~~~~~~~~~~~
+
+* Override __copy__ for Frozen. This is an optimization that was found in big uses of tri.token.
+
 3.0.1 (2019-06-12)
 ~~~~~~~~~~~~~~~~~~
 
