@@ -7,3 +7,4 @@ include requirements.txt
 include test_requirements.txt
 include lib/tri_struct/*.h
 include lib/tri_struct/*.inc
+recursive-include tests *.py
