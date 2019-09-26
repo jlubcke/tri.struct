@@ -40,9 +40,8 @@ docs:
 	tox -e docs
 
 dist: clean
-	python2.7 setup.py sdist
-	python2.7 setup.py bdist_wheel
 	python3.6 setup.py bdist_wheel
+	python3.7 setup.py bdist_wheel
 	ls -l dist
 
 tag:
