@@ -42,7 +42,7 @@ docs:
 	tox -e docs
 
 dist: clean
-	$(PYTHON) setup.py bdist_wheel
+	$(PYTHON) setup.py sdist bdist_wheel
 	ls -l dist
 
 tag:
