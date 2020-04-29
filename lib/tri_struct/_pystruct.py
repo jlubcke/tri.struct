@@ -37,7 +37,7 @@ class Struct(dict):
     __str__ = __repr__
 
     def __getattribute__(self, item):
-        if item not in self:
+        if not dict.__contains__(self, item):
             try:
                 return object.__getattribute__(self, item)
             except AttributeError as e:
@@ -46,7 +46,7 @@ class Struct(dict):
                     return missing_.__get__(self)(item)
                 except AttributeError:
                     raise e
-        return self[item]
+        return dict.__getitem__(self, item)
 
     def __setattr__(self, key, value):
         self[key] = value

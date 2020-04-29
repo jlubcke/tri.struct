@@ -44,6 +44,16 @@ def test_get_item(Struct):
     assert 1 == s.get('a')
 
 
+def test_get_attr_broken_shadow(Struct):
+    # This is mostly to document the somewhat quirky behavior when shadowing __getitem__
+    class MyStruct(Struct):
+        def __getitem__(self, key):
+            return 17
+
+    assert MyStruct(x=19)['x'] == 17
+    assert MyStruct(x=19).x == 19
+
+
 def test_set_item(Struct):
     s = Struct(a=1, b=2, c=3)
     s['a'] = 8
