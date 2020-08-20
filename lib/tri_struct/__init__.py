@@ -1,12 +1,12 @@
 from ._pystruct import Struct
 try:
-    from ._cstruct import _Struct as Struct  # noqa
+    from ._cstruct import _Struct as FastStruct  # noqa
 except ImportError:  # pragma: no cover
-    pass
+    FastStruct = None
 
 
-__version__ = '3.1.0'  # pragma: no mutate
-__all__ = ['Struct', 'FrozenStruct', 'merged', 'DefaultStruct', 'to_default_struct']  # pragma: no mutate
+__version__ = '4.0.0'  # pragma: no mutate
+__all__ = ['Struct', 'FastStruct', 'FrozenStruct', 'merged', 'DefaultStruct', 'to_default_struct']  # pragma: no mutate
 
 
 class Frozen(object):

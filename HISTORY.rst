@@ -1,5 +1,10 @@
 Changelog
 ---------
+4.0.0 (----------)
+~~~~~~~~~~~~~~~~~~
+
+* Split c implementation to separate `FastStruct`. The native python implementation is now always the `Struct`
+
 
 3.1.0 (2019-08-14)
 ~~~~~~~~~~~~~~~~~~

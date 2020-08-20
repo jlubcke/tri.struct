@@ -3,19 +3,21 @@ import platform
 
 import pytest
 
-from tri_struct import FrozenStruct, merged, DefaultStruct, to_default_struct
-from tri_struct._pystruct import Struct as PyStruct
-
-try:
-    from tri_struct._cstruct import _Struct as CStruct
-except ImportError:
-    CStruct = None
+from tri_struct import Struct as PyStruct
+from tri_struct import (
+    FastStruct,
+    Frozen,
+    FrozenStruct,
+    merged,
+    DefaultStruct,
+    to_default_struct,
+)
 
 
 @pytest.fixture(scope="module",
-                params=filter(None, [CStruct, PyStruct]),
-                ids=[name for (name, cls) in [("CStruct", CStruct),
-                                              ("PyStruct", PyStruct)]
+                params=filter(None, [PyStruct, FastStruct]),
+                ids=[name for (name, cls) in [("Struct", PyStruct),
+                                              ("FastStruct", FastStruct)]
                      if cls is not None])
 def Struct(request):
     return request.param
@@ -142,6 +144,9 @@ def test_shadow_methods(Struct):
 
 
 def test_hash(Struct):
+    if Struct is FastStruct:
+        pytest.skip('Does not work for FastStruct')
+
     s = Struct(x=17)
     with pytest.raises(TypeError) as e:
         hash(s)
@@ -149,6 +154,9 @@ def test_hash(Struct):
         assert "" in str(e.value)
     else:
         assert "unhashable type: 'Struct'" in str(e.value)
+
+    class FrozenStruct(Frozen, Struct):
+        __slots__ = ('_hash', )
 
     f = FrozenStruct(x=17)
     assert isinstance(hash(f), int)
@@ -172,20 +180,20 @@ def test_del(Struct):
 
 
 def test_stable_str(Struct):
-    assert str(Struct(b=1, a=2)) == 'Struct(a=2, b=1)'
+    assert str(Struct(b=1, a=2)) == f'{Struct.__name__}(a=2, b=1)'
 
 
 def test_recursive_repr(Struct):
     s = Struct()
     s.s = s
 
-    assert str(s) == 'Struct(s=Struct(...))'
+    assert str(s) == f'{Struct.__name__}(s={Struct.__name__}(...))'
 
     # test fix for use-after-free
     s = Struct()
     s.a = s
     s.b = s
-    assert repr(s) == 'Struct(a=Struct(...), b=Struct(...))'
+    assert repr(s) == f'{Struct.__name__}(a={Struct.__name__}(...), b={Struct.__name__}(...))'
 
 
 def test_missing_method(Struct):
@@ -204,36 +212,22 @@ def test_missing_method(Struct):
     # the missing method should be called for attr access, on missing attribute
     assert m.bar == 1
 
-##
+
 # because of class name & module renaming, pickling the different
 # implementations won't, unless you also switch the tri_struct.Struct
 # implementation to match
-##
-@pytest.mark.skipif(CStruct is None, reason="CStruct not available")
-def test_pickle_cstruct():
+@pytest.mark.skipif(FastStruct is None, reason="CStruct not available")
+def test_pickle_faststruct():
+    s = FastStruct(x=17)
+    assert s == pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL))
+    assert type(s) == type(pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL)))
+
+
+def test_pickle_struct():
     import tri_struct
-
-    _Struct = tri_struct.Struct
-    try:
-        tri_struct.Struct = CStruct
-        s = CStruct(x=17)
-        assert s == pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL))
-        assert type(s) == type(pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL)))
-    finally:
-        tri_struct.Struct = _Struct
-
-
-def test_pickle_pystruct():
-    import tri_struct
-
-    _Struct = tri_struct.Struct
-    try:
-        tri_struct.Struct = PyStruct
-        s = PyStruct(x=17)
-        assert s == pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL))
-        assert type(s) == type(pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL)))
-    finally:
-        tri_struct.Struct = _Struct
+    s = tri_struct.Struct(x=17)
+    assert s == pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL))
+    assert type(s) == type(pickle.loads(pickle.dumps(s, pickle.HIGHEST_PROTOCOL)))
 
 
 def test_frozen_struct(Struct):
