@@ -213,6 +213,13 @@ def test_missing_method(Struct):
     assert m.bar == 1
 
 
+def test_attribute_exception(Struct):
+    with pytest.raises(AttributeError) as e:
+        Struct().foo
+    assert str(e.value) == "'Struct' object has no attribute 'foo'"
+    assert e.value.__context__ is None
+
+
 # because of class name & module renaming, pickling the different
 # implementations won't, unless you also switch the tri_struct.Struct
 # implementation to match

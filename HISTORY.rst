@@ -1,5 +1,12 @@
 Changelog
 ---------
+
+4.1.0 (----------)
+~~~~~~~~~~~~~~~~~~
+
+* Avoid setting confusing context on AttributeError exceptions (from when not finding __missing__)
+
+
 4.0.0 (2020-12-20)
 ~~~~~~~~~~~~~~~~~~
 
