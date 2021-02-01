@@ -43,9 +43,11 @@ class Struct(dict):
             except AttributeError as e:
                 try:
                     missing_ = object.__getattribute__(self, '__missing__')
-                    return missing_.__get__(self)(item)
                 except AttributeError:
-                    raise e
+                    pass
+                else:
+                    return missing_.__get__(self)(item)
+                raise e
         return dict.__getitem__(self, item)
 
     def __setattr__(self, key, value):
