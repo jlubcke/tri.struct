@@ -5,7 +5,7 @@ except ImportError:  # pragma: no cover
     FastStruct = None
 
 
-__version__ = '4.0.0'  # pragma: no mutate
+__version__ = '4.1.0'  # pragma: no mutate
 __all__ = ['Struct', 'FastStruct', 'FrozenStruct', 'merged', 'DefaultStruct', 'to_default_struct']  # pragma: no mutate
 
 
